@@ -57,7 +57,7 @@ class MyExpensesApiServiceImpl(
 
 
     companion object{
-        const val BASE_URL ="https://locahost:8080/api"
+        const val BASE_URL ="https://10.0.2.2:8080/api"
     }
 }
 
