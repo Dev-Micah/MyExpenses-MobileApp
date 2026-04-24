@@ -41,6 +41,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     //koin
+    implementation(libs.koin.android)
 
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.content.negotiation)
