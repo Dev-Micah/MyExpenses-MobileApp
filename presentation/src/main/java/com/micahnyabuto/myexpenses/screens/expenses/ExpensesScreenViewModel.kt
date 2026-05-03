@@ -30,6 +30,9 @@ class ExpensesScreenViewModel(
         MutableStateFlow<ExpensesScreenUiState>(ExpensesScreenUiState.Loading)
     val expensesScreenUiState = _expensesScreenUiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     private val _selectedCategory = MutableStateFlow<Category?>(null)
     val selectedCategory = _selectedCategory.asStateFlow()
 
@@ -80,13 +83,20 @@ class ExpensesScreenViewModel(
         getExpenses()
     }
 
-    fun getExpenses() {
+    fun getExpenses(isRefreshing: Boolean = false) {
         viewModelScope.launch {
-            _expensesScreenUiState.update { ExpensesScreenUiState.Loading }
+            if (isRefreshing) {
+                _isRefreshing.update { true }
+            } else {
+                _expensesScreenUiState.update { ExpensesScreenUiState.Loading }
+            }
+
             when (val response = getExpensesUseCase(USER_ID)) {
                 is Result.Error -> {
-                    _expensesScreenUiState.update {
-                        ExpensesScreenUiState.Error(response.message)
+                    if (!isRefreshing) {
+                        _expensesScreenUiState.update {
+                            ExpensesScreenUiState.Error(response.message)
+                        }
                     }
                 }
 
@@ -96,6 +106,7 @@ class ExpensesScreenViewModel(
                     }
                 }
             }
+            _isRefreshing.update { false }
         }
     }
 
@@ -143,6 +154,6 @@ class ExpensesScreenViewModel(
     }
 
     companion object {
-        const val USER_ID = 1
+        const val USER_ID = 1L
     }
 }

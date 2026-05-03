@@ -13,14 +13,14 @@ class MyExpensesRepositoryImpl(
     private val myExpenseApiService: MyExpenseApiService
 ) : ExpensesRepository {
 
-    override suspend fun getUserData(userId: Int): Result<User> {
+    override suspend fun getUserData(userId: Long): Result<User> {
         return when (val response = myExpenseApiService.getUserData(userId)) {
             is ApiResponse.Error -> Result.Error(response.message)
             is ApiResponse.Success -> Result.Success(response.data.toDomain())
         }
     }
 
-    override suspend fun getAllExpenses(userId: Int): Result<List<Expense>> {
+    override suspend fun getAllExpenses(userId: Long): Result<List<Expense>> {
         return when (val response = myExpenseApiService.getExpenses(userId)) {
             is ApiResponse.Error -> Result.Error(response.message)
             is ApiResponse.Success -> Result.Success(

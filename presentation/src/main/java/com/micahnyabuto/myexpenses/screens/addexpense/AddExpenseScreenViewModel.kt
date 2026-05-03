@@ -17,7 +17,7 @@ class AddExpenseScreenViewModel(
     private val createExpenseUseCase: CreateExpenseUseCase,
 ) : ViewModel() {
 
-    var state by mutableStateOf(AddExpenseState(date = "2026-05-4"))
+    var state by mutableStateOf(AddExpenseState(date = "2024-05-20"))
         private set
 
     private val _uiEvent = Channel<UiEvent>()

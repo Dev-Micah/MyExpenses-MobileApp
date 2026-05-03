@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -53,6 +54,7 @@ fun ExpensesScreen(
     val filteredExpenses by viewModel.filteredExpenses.collectAsStateWithLifecycle()
     val totalBalance by viewModel.totalBalance.collectAsStateWithLifecycle()
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -75,48 +77,57 @@ fun ExpensesScreen(
             }
         }
     ) { padding ->
-        Column(
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = { viewModel.getExpenses(isRefreshing = true) },
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            TotalBalanceCard(totalBalance)
+                TotalBalanceCard(totalBalance)
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            CategorySelectionRow(
-                selectedCategory = selectedCategory,
-                onCategorySelected = viewModel::onCategorySelected
-            )
+                CategorySelectionRow(
+                    selectedCategory = selectedCategory,
+                    onCategorySelected = viewModel::onCategorySelected
+                )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            RecentActivityRow()
+                RecentActivityRow()
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            AnimatedContent(
-                targetState = uiState,
-                modifier = Modifier.weight(1f),
-                label = "UIStateAnimation"
-            ) { state ->
-                when (state) {
-                    is ExpensesScreenUiState.Loading -> {
-                        ExpensesLoadingScreen()
-                    }
-                    is ExpensesScreenUiState.Error -> {
-                        ExpensesErrorScreen(
-                            errorMessage = state.message
-                        )
-                    }
-                    is ExpensesScreenUiState.Success -> {
-                        if (filteredExpenses.isEmpty()) {
-                            ExpensesEmptyScreen()
-                        } else {
-                            ExpenseScreenContent()
+                AnimatedContent(
+                    targetState = uiState,
+                    modifier = Modifier.weight(1f),
+                    label = "UIStateAnimation"
+                ) { state ->
+                    when (state) {
+                        is ExpensesScreenUiState.Loading -> {
+                            ExpensesLoadingScreen()
+                        }
+
+                        is ExpensesScreenUiState.Error -> {
+                            ExpensesErrorScreen(
+                                errorMessage = state.message
+                            )
+                        }
+
+                        is ExpensesScreenUiState.Success -> {
+                            if (filteredExpenses.isEmpty()) {
+                                ExpensesEmptyScreen()
+                            } else {
+                                ExpenseScreenContent()
+                            }
                         }
                     }
                 }
@@ -131,7 +142,8 @@ private fun ExpenseScreenContent(
     viewModel: ExpensesScreenViewModel = koinViewModel(),
     onExpenseClick: () -> Unit ={}
 ){
-    val filteredExpenses by viewModel.filteredExpenses.collectAsStateWithLifecycle()
+    val filteredExpenses by viewModel
+        .filteredExpenses.collectAsStateWithLifecycle()
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),

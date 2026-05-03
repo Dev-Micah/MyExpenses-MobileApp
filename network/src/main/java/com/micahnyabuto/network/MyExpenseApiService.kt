@@ -6,9 +6,9 @@ import com.micahnyabuto.network.dtos.UserResponse
 import com.micahnyabuto.network.helpers.ApiResponse
 
 interface MyExpenseApiService {
-    suspend fun getUserData(userId: Int) : ApiResponse<UserResponse>
+    suspend fun getUserData(userId: Long) : ApiResponse<UserResponse>
 
-    suspend fun getExpenses(userId: Int): ApiResponse<List<ExpenseResponse>>
+    suspend fun getExpenses(userId: Long): ApiResponse<List<ExpenseResponse>>
 
     suspend fun createExpense(expenseRequest: ExpenseRequest): ApiResponse<ExpenseResponse>
 

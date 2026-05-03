@@ -16,13 +16,13 @@ import io.ktor.http.contentType
 class MyExpensesApiServiceImpl(
     private val client: HttpClient
 ): MyExpenseApiService {
-    override suspend fun getUserData(userId: Int): ApiResponse<UserResponse> {
+    override suspend fun getUserData(userId: Long): ApiResponse<UserResponse> {
         return safeApiCall {
             client.get("$BASE_URL/users?$userId")
         }
     }
 
-    override suspend fun getExpenses(userId: Int): ApiResponse<List<ExpenseResponse>> {
+    override suspend fun getExpenses(userId: Long): ApiResponse<List<ExpenseResponse>> {
         return safeApiCall {
             client.get("$BASE_URL/expenses/user/$userId")
         }
