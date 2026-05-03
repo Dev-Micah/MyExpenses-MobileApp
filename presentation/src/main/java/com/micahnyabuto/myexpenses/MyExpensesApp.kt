@@ -1,6 +1,9 @@
 package com.micahnyabuto.myexpenses
 
 import android.app.Application
+import com.micahnyabuto.data.di.dataModule
+import com.micahnyabuto.domain.di.domainModule
+import com.micahnyabuto.myexpenses.di.presentationModule
 import com.micahnyabuto.network.di.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -11,7 +14,10 @@ class MyExpensesApp: Application() {
         super.onCreate()
 
         val modules = listOf(
-            networkModule
+            networkModule,
+            domainModule,
+            dataModule,
+            presentationModule
         )
 
         startKoin {

@@ -4,16 +4,10 @@ import com.micahnyabuto.domain.helpers.Result
 import com.micahnyabuto.domain.models.Expense
 import com.micahnyabuto.domain.repository.ExpensesRepository
 
-class GetExpensesUseCase(
+class CreateExpenseUseCase(
     private val expensesRepository: ExpensesRepository
 ) {
-    suspend operator fun invoke(userId: Int): Result<List<Expense>> {
-        return expensesRepository.getAllExpenses(userId)
+    suspend operator fun invoke(expense: Expense, userId: Long): Result<Expense> {
+        return expensesRepository.createExpense(expense, userId)
     }
-
 }
-
-
-/*
-Read on UseCases
- */
